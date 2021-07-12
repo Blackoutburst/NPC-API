@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 
+import net.minecraft.server.v1_8_R3.EntityPlayer;
+
 public class NPC {
 	
 	protected UUID uuid;
@@ -11,6 +13,8 @@ public class NPC {
 	protected Location location;
 	protected Skin skin;
 	protected boolean capeVisible;
+	protected int entityId;
+	protected EntityPlayer entity;
 	
 	public NPC (UUID uuid, String name) {
 		this.uuid = uuid;
@@ -18,6 +22,8 @@ public class NPC {
 		this.location = null;
 		this.skin = null;
 		this.capeVisible = true;
+		this.entityId = -1;
+		this.entity = null;
 	}
 
 	public UUID getUUID() {
@@ -52,6 +58,24 @@ public class NPC {
 
 	public NPC setCapeVisible(boolean capeVisible) {
 		this.capeVisible = capeVisible;
+		return (this);
+	}
+
+	public int getEntityId() {
+		return entityId;
+	}
+
+	public NPC setEntityId(int entityId) {
+		this.entityId = entityId;
+		return (this);
+	}
+
+	public EntityPlayer getEntity() {
+		return entity;
+	}
+
+	public NPC setEntity(EntityPlayer entity) {
+		this.entity = entity;
 		return (this);
 	}
 	

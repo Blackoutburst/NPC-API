@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.blackout.npcapi.core.APlayer;
 import com.blackout.npcapi.core.NPC;
 import com.blackout.npcapi.main.Main;
 import com.mojang.authlib.GameProfile;
@@ -17,6 +18,7 @@ import net.minecraft.server.v1_8_R3.DataWatcher;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
@@ -31,6 +33,35 @@ public class NPCManager {
 
 	public static List<NPC> npcs = new ArrayList<NPC>();
 	
+	/**
+	 * Destroy the NPC when the player get too far from it
+	 * @param p
+	 * @param npc
+	 */
+	public static void hideNPC(Player p, NPC npc) {
+		PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+		
+		connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc.getEntity()));
+		connection.sendPacket(new PacketPlayOutEntityDestroy(npc.getEntityId()));
+	}
+	
+	/**
+	 * Respawn the NPC when the player get close enough to it
+	 * @param p
+	 * @param npc
+	 */
+	public static void reloadNPC(Player p, NPC npc) {
+		DataWatcher watcher = npc.getEntity().getDataWatcher();
+		watcher.watch(10, (byte) (npc.isCapeVisible() ? 127 : 126));
+		
+		sendPacket(p, watcher, npc);
+	}
+	
+	/**
+	 * Spawn the NPC when at a specific location
+	 * @param npc
+	 * @param p
+	 */
 	public static void spawnNPC(NPC npc, Player p) {
 		WorldServer s = ((CraftWorld) npc.getLocation().getWorld()).getHandle();
 		World w = ((CraftWorld) npc.getLocation().getWorld()).getHandle();
@@ -45,13 +76,45 @@ public class NPCManager {
 		
 		npcEntity.setLocation(npc.getLocation().getX(), npc.getLocation().getY(), npc.getLocation().getZ(), npc.getLocation().getYaw(), npc.getLocation().getPitch());
 		
-		PacketPlayOutEntityHeadRotation headRotationPacket = new PacketPlayOutEntityHeadRotation(npcEntity, (byte) ((npc.getLocation().getYaw() * 256.0F) / 360.0F));
-		PacketPlayOutPlayerInfo addPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, npcEntity);
-		PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(npcEntity);
-		PacketPlayOutEntityMetadata dataPacket = new PacketPlayOutEntityMetadata(npcEntity.getId(), watcher, true);
-		PacketPlayOutPlayerInfo removePacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npcEntity);
+		npc.setEntityId(npcEntity.getId())
+		.setEntity(npcEntity);
+		npcs.add(npc);
+		
+		sendPacket(p, watcher, npc);
+		
+		APlayer ap = APlayer.get(p);
+		ap.npcsVisible.put(npc.getUUID(), true);
+	}
 	
-		PacketPlayOutAnimation armSwing = new PacketPlayOutAnimation(npcEntity, 0);
+	/**
+	 * Remove a NPC
+	 * @param p
+	 * @param npc
+	 */
+	public static void deleteNPC(Player p, NPC npc) {
+		PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
+		
+		connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc.getEntity()));
+		connection.sendPacket(new PacketPlayOutEntityDestroy(npc.getEntityId()));
+		npcs.remove(npc);
+		
+		APlayer ap = APlayer.get(p);
+		ap.npcsVisible.remove(npc.getUUID());
+	}
+	
+	/**
+	 * Send packet used to spawn a NPC
+	 * @param p
+	 * @param watcher
+	 * @param npc
+	 */
+	private static void sendPacket(Player p, DataWatcher watcher, NPC npc) {
+		PacketPlayOutEntityHeadRotation headRotationPacket = new PacketPlayOutEntityHeadRotation(npc.getEntity(), (byte) ((npc.getLocation().getYaw() * 256.0F) / 360.0F));
+		PacketPlayOutPlayerInfo addPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, npc.getEntity());
+		PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(npc.getEntity());
+		PacketPlayOutEntityMetadata dataPacket = new PacketPlayOutEntityMetadata(npc.getEntityId(), watcher, true);
+		PacketPlayOutPlayerInfo removePacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, npc.getEntity());
+		PacketPlayOutAnimation armSwing = new PacketPlayOutAnimation(npc.getEntity(), 0);
 		
 		PlayerConnection connection = ((CraftPlayer) p).getHandle().playerConnection;
 		connection.sendPacket(addPacket);
@@ -59,8 +122,6 @@ public class NPCManager {
 		connection.sendPacket(dataPacket);
 		connection.sendPacket(headRotationPacket);
 		connection.sendPacket(armSwing);
-		
-		npcs.add(npc);
 		
 		new BukkitRunnable() {
 			public void run() {
