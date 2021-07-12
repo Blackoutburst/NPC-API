@@ -1,4 +1,5 @@
 [![License](https://img.shields.io/github/license/Blackoutburst/NPC-API.svg)](LICENSE)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/82aed48c64d048ba80a044e15d6d97ec)](https://www.codacy.com/gh/Blackoutburst/NPC-API/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Blackoutburst/NPC-API&amp;utm_campaign=Badge_Grade)
 # NPC-API
 Simple API to create Minecraft NPC using spigot/bukkit
 Paper/Spigot version 1.8.8 (v1_8_R3)
