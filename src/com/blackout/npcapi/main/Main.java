@@ -12,7 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.blackout.npcapi.core.APlayer;
 import com.blackout.npcapi.core.NPC;
-import com.blackout.npcapi.core.PacketInteractListener;
 import com.blackout.npcapi.utils.NPCManager;
 
 public class Main extends JavaPlugin implements Listener {
