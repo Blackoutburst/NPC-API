@@ -12,7 +12,7 @@ import com.blackout.npcapi.main.Main;
 
 public class APlayer {
 	
-	protected Player player;
+	public Player player;
 	public Map<UUID, Boolean> npcsVisible;
 	public List<NPC> npcs;
 	
@@ -24,7 +24,7 @@ public class APlayer {
 	
 	public static APlayer get(Player player) {
 		for (APlayer p : Main.players)
-			if (p.player == player)
+			if (p.player.getUniqueId().equals(player.getUniqueId()))
 				return (p);
 		return (null);
 	}
