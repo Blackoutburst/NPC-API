@@ -51,7 +51,6 @@ public class Main extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
-		PacketInteractListener.remove(event.getPlayer());
 		players.remove(APlayer.get(event.getPlayer()));
 	}
 }
