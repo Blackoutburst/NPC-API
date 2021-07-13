@@ -16,6 +16,12 @@ public class SkinLoader {
 
 	public static List<Skin> skins = new ArrayList<Skin>();
 	
+	
+	/**
+	 * Get a skin using his ID
+	 * @param id
+	 * @return
+	 */
 	public static Skin getSkinById(int id) {
 		for (Skin s : skins)
 			if (id == s.getId())
@@ -25,6 +31,11 @@ public class SkinLoader {
 		return (null);
 	}
 	
+	/**
+	 * Load a skin from Mojang server using a player UUID
+	 * @param id
+	 * @param uuid
+	 */
 	public static void loadSkinFromUUID(int id, String uuid) {
 		try {
 			URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
@@ -39,6 +50,11 @@ public class SkinLoader {
 		}
 	}
 	
+	/**
+	 * Load a skin using a player name
+	 * @param id
+	 * @param name
+	 */
 	public static void loadSkinFromName(int id, String name) {
 		try {
 			URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
