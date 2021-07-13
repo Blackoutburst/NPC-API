@@ -95,10 +95,8 @@ public class PacketInteractListener {
 	private static void deleteListener(Player player, Field channelField) {
 		try {
 			Channel channel = (Channel) channelField.get(((CraftPlayer) player).getHandle().playerConnection.networkManager);
-			if (channel != null) {
-				if (channel.pipeline().get("ENTITY_USE") != null) {
+			if (channel != null && channel.pipeline().get("ENTITY_USE") != null) {
 				channel.pipeline().remove("ENTITY_USE");
-				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
