@@ -22,4 +22,39 @@ NPC npc = new NPC(UUID.randomUUID(), "Your NPC name")
 		NPCManager.spawnNPC(npc, event.getPlayer()); // Spawn your new NPC
 ```
 
+Create a new class used to listen the interaction with the NCP
+```java
+public class YourClassName implements NPCPacket {
+
+	@Override
+	public void onLeftClick(Player player, int id) {
+		APlayer ap = APlayer.get(player);
+		for (NPC npc : ap.npcs) {
+			if (id == npc.getEntityId()) {
+				System.out.println(npc.getName());
+			}
+		}
+	}
+
+	@Override
+	public void onRightClick(Player player, int id) {
+		APlayer ap = APlayer.get(player);
+		for (NPC npc : ap.npcs) {
+			if (id == npc.getEntityId()) {
+				System.out.println(npc.getName());
+			}
+		}
+	}
+}
+```
+
+On player join create the packet listener
+```java
+PacketInteractListener.init(event.getPlayer(), new YourClassName()); //NOTE: YourClassName must be the name of you class implementing NPCPacket
+```
+And remove it when the player leave
+```java
+PacketInteractListener.remove(event.getPlayer());
+```
+
 This is still WIP and this will never be a big project just a tool to create NPC faster for my future plugins
