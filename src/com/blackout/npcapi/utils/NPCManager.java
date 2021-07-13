@@ -1,8 +1,5 @@
 package com.blackout.npcapi.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -34,8 +31,6 @@ import net.minecraft.server.v1_8_R3.WorldServer;
 
 public class NPCManager {
 
-	public static List<NPC> npcs = new ArrayList<NPC>();
-	
 	/**
 	 * Destroy the NPC when the player get too far from it
 	 * @param p
@@ -79,13 +74,14 @@ public class NPCManager {
 		
 		npcEntity.setLocation(npc.getLocation().getX(), npc.getLocation().getY(), npc.getLocation().getZ(), npc.getLocation().getYaw(), npc.getLocation().getPitch());
 		
+		APlayer ap = APlayer.get(p);
+		
 		npc.setEntityId(npcEntity.getId())
 		.setEntity(npcEntity);
-		npcs.add(npc);
+		ap.npcs.add(npc);
 		
 		sendPacket(p, watcher, npc);
 		
-		APlayer ap = APlayer.get(p);
 		ap.npcsVisible.put(npc.getUUID(), true);
 		hideName(p, npc);
 	}
@@ -100,9 +96,10 @@ public class NPCManager {
 		
 		connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc.getEntity()));
 		connection.sendPacket(new PacketPlayOutEntityDestroy(npc.getEntityId()));
-		npcs.remove(npc);
 		
 		APlayer ap = APlayer.get(p);
+		
+		ap.npcs.remove(npc);
 		ap.npcsVisible.remove(npc.getUUID());
 		showName(p, npc);
 	}
