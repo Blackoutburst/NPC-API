@@ -7,6 +7,11 @@ Paper/Spigot version 1.8.8 (v1_8_R3)
 
 ## Usage
 
+In your plugin.yml
+```yml
+depend: [NPCAPI]
+```
+
 Pre load skin (most likely on plugin startup)
 ```java
 SkinLoader.loadSkinFromUUID(skinId, "uuid of the player skin");
