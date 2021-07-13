@@ -7,6 +7,9 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import com.blackout.npcapi.core.APlayer;
 import com.blackout.npcapi.core.NPC;
@@ -84,6 +87,7 @@ public class NPCManager {
 		
 		APlayer ap = APlayer.get(p);
 		ap.npcsVisible.put(npc.getUUID(), true);
+		hideName(p, npc);
 	}
 	
 	/**
@@ -100,6 +104,7 @@ public class NPCManager {
 		
 		APlayer ap = APlayer.get(p);
 		ap.npcsVisible.remove(npc.getUUID());
+		showName(p, npc);
 	}
 	
 	/**
@@ -128,5 +133,41 @@ public class NPCManager {
 				connection.sendPacket(removePacket);
 			}
 		}.runTaskLater(Main.getPlugin(Main.class), 100L);
+	}
+	
+	/**
+	 * Put the NPC in a special team to hide their name
+	 * @param p
+	 * @param npc
+	 */
+	public static void hideName(Player p, NPC npc) {
+		if (npc.isNameVisible()) return;
+		Scoreboard scoreboard = p.getScoreboard();
+		Team team = null;
+		
+		if (scoreboard.getTeam("NPC") == null) {
+			scoreboard.registerNewTeam("NPC");
+		}
+		team = scoreboard.getTeam("NPC");
+
+	    team.addEntry(npc.getName());
+        team.setNameTagVisibility(NameTagVisibility.NEVER);
+	}
+	
+	/**
+	 * Remove a NPC from the NPC team to display back his name
+	 * @param p
+	 * @param npc
+	 */
+	public static void showName(Player p, NPC npc) {
+		if (npc.isNameVisible()) return;
+		Scoreboard scoreboard = p.getScoreboard();
+		Team team = null;
+		
+		if (scoreboard.getTeam("NPC") == null) {
+			scoreboard.registerNewTeam("NPC");
+		}
+		team = scoreboard.getTeam("NPC");
+	    team.removeEntry(npc.getName());
 	}
 }

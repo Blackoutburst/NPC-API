@@ -2,7 +2,9 @@ package com.blackout.npcapi.main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -14,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.blackout.npcapi.core.APlayer;
 import com.blackout.npcapi.core.NPC;
 import com.blackout.npcapi.utils.NPCManager;
+import com.blackout.npcapi.utils.SkinLoader;
 
 public class Main extends JavaPlugin implements Listener {
 

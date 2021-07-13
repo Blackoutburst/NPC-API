@@ -15,6 +15,7 @@ public class NPC {
 	protected boolean capeVisible;
 	protected int entityId;
 	protected EntityPlayer entity;
+	protected boolean nameVisible;
 	
 	public NPC (UUID uuid, String name) {
 		this.uuid = uuid;
@@ -24,6 +25,7 @@ public class NPC {
 		this.capeVisible = true;
 		this.entityId = -1;
 		this.entity = null;
+		this.nameVisible = true;
 	}
 
 	public UUID getUUID() {
@@ -79,4 +81,12 @@ public class NPC {
 		return (this);
 	}
 	
+	public boolean isNameVisible() {
+		return nameVisible;
+	}
+
+	public NPC setNameVisible(boolean nameVisible) {
+		this.nameVisible = nameVisible;
+		return (this);
+	}
 }
