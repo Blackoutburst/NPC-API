@@ -54,8 +54,7 @@ public class PacketInteractListener {
 					protected void decode(ChannelHandlerContext chc, Packet packet, List<Object> out) throws Exception {
 						if (packet instanceof PacketPlayInUseEntity) {
 							PacketPlayInUseEntity usePacket = (PacketPlayInUseEntity) packet;
-							if (usePacket.a() == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT || 
-								usePacket.a() == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT_AT) {
+							if (usePacket.a() == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT) {
 								npcInteract.onRightClick(player, actionField.getInt(usePacket));
 							}
 							if (usePacket.a() == PacketPlayInUseEntity.EnumEntityUseAction.ATTACK) {
